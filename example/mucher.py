@@ -120,7 +120,7 @@ def Genera_file_domande(filename='questionario.xlsx',folder='.'):
 
     sheets = df.sheet_names
 
-    for sheet in sheets[1:]:
+    for sheet in sheets:
         elems = df.parse(sheet, header=None).values
         if len(elems)==5:
             name = os.path.join(folder,sheet+"-0")
@@ -128,21 +128,21 @@ def Genera_file_domande(filename='questionario.xlsx',folder='.'):
             responses = [str(e[0]).strip() for e in elems[1:]]
             responses = "\n.\n".join(responses)+'\n.'
             with open(name,'w') as file:
-                print(question+"\n.\n"+responses,file=file)
+                print(question+"\n.\n"+responses+"\n.\n",file=file)
         else:
-            n = len(elems)%4
+            n = int(len(elems)/5)
             for i in range(n):
                 name = os.path.join(folder,sheet+"-"+str(i))
                 question = elems[5*i][0].strip()
                 responses = [str(e[0]).strip() for e in elems[5*i+1:5*i+1+4]]
                 responses = "\n.\n".join(responses)
                 with open(name,'w') as file:
-                    print(question+"\n.\n"+responses,file=file)
+                    print(question+"\n.\n"+responses+"\n.\n",file=file)
     return sheets
 
 def Genera_Much_Description(sheets_name, serial=10, create=40, folder='.', filename='description', usage=1, seed=42):
     usages = []
-    for sheet in sheets_name[1:]:
+    for sheet in sheets_name:
         usages.append('''use {} from "{}-*";'''.format(usage,sheet))
     usages = "\n".join(usages)
     d = """
