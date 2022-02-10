@@ -1,0 +1,67 @@
+
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsfonts,latexsym}
+\usepackage[italian]{babel}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{multicol}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{siunitx}
+\usepackage{physics}
+\usepackage{multicol}
+
+\oddsidemargin  -0.5in
+\evensidemargin -0.5in
+\textwidth      7.5in
+\headheight     -0.7in
+\topmargin      -0.5cm
+\textheight=10.5in
+\footskip 0 in
+\parskip 0.10in
+
+\begin{document}
+
+\pagestyle{empty}
+
+\newcommand{\mcglobalheader}{
+}
+
+
+ewcommand{\boxt}{{\Huge $\square$ }}
+
+\newcommand{\mcpaperheader}{
+\ \
+TESTO NUMERO \mcserialnumber. STUDENTE: \
+{\textbf{Tempo a disposizione: XXXX.} In ognuna delle seguenti domande una sola opzione è corretta.
+\Risposta corretta: XX punti. Risposta non data: XX punti. Risposta errata: XX punti.}
+
+\begin{center}
+{\Large Verifica di XXX n.XX: XXXX}\
+Classe XX, XX/XX/20XX.
+\end{center}
+}
+
+
+
+\newcommand{\mcpaperfooter}{
+
+
+
+\newpage
+}
+
+\newcommand{\mcquestionheader}{\noindent{\bf \mcquestionnumber}. }
+
+\newcommand{\mcquestionfooter}{}
+
+\input mc-output.tex
+
+\end{document}
+    

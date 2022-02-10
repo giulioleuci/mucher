@@ -1,0 +1,17 @@
+
+directory ".";
+seed 42;
+serial 10;
+use 1 from "Foglio2-*";
+use 1 from "Foglio3-*";
+use 1 from "Foglio4-*";
+use 1 from "Foglio6-*";
+use 1 from "Foglio7-*";
+use 1 from "Foglio8-*";
+use 1 from "Foglio9-*";
+use 1 from "Foglio10-*";
+use 1 from "Foglio11-*";
+use 1 from "Foglio12-*";
+use 1 from "Foglio13-*";
+use 1 from "Foglio14-*";
+create 30;

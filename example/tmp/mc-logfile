@@ -1,0 +1,54 @@
+2: base dir set to .
+3: seed set to 42, random number generator initialized
+4: first serial number set to 10
+5: question category Foglio2-*, required number of questions 1
+5: Foglio2-0 matches Foglio2-*
+5: Foglio2-1 matches Foglio2-*
+5: 2 questions of type 'Foglio2-*' were found
+6: question category Foglio3-*, required number of questions 1
+6: Foglio3-0 matches Foglio3-*
+6: 1 questions of type 'Foglio3-*' were found
+7: question category Foglio4-*, required number of questions 1
+7: Foglio4-0 matches Foglio4-*
+7: 1 questions of type 'Foglio4-*' were found
+8: question category Foglio6-*, required number of questions 1
+8: Foglio6-0 matches Foglio6-*
+8: 1 questions of type 'Foglio6-*' were found
+9: question category Foglio7-*, required number of questions 1
+9: Foglio7-0 matches Foglio7-*
+9: 1 questions of type 'Foglio7-*' were found
+10: question category Foglio8-*, required number of questions 1
+10: Foglio8-0 matches Foglio8-*
+10: 1 questions of type 'Foglio8-*' were found
+11: question category Foglio9-*, required number of questions 1
+11: Foglio9-0 matches Foglio9-*
+11: 1 questions of type 'Foglio9-*' were found
+12: question category Foglio10-*, required number of questions 1
+12: Foglio10-0 matches Foglio10-*
+12: 1 questions of type 'Foglio10-*' were found
+13: question category Foglio11-*, required number of questions 1
+13: Foglio11-0 matches Foglio11-*
+13: 1 questions of type 'Foglio11-*' were found
+14: question category Foglio12-*, required number of questions 1
+14: Foglio12-0 matches Foglio12-*
+14: 1 questions of type 'Foglio12-*' were found
+15: question category Foglio13-*, required number of questions 1
+15: Foglio13-0 matches Foglio13-*
+15: 1 questions of type 'Foglio13-*' were found
+16: question category Foglio14-*, required number of questions 1
+16: Foglio14-0 matches Foglio14-*
+16: 1 questions of type 'Foglio14-*' were found
+17: number of test types: 12
+17: type Foglio2-*, number desired:   1
+17: type Foglio3-*, number desired:   1
+17: type Foglio4-*, number desired:   1
+17: type Foglio6-*, number desired:   1
+17: type Foglio7-*, number desired:   1
+17: type Foglio8-*, number desired:   1
+17: type Foglio9-*, number desired:   1
+17: type Foglio10-*, number desired:   1
+17: type Foglio11-*, number desired:   1
+17: type Foglio12-*, number desired:   1
+17: type Foglio13-*, number desired:   1
+17: type Foglio14-*, number desired:   1
+scanner: read 18 lines
