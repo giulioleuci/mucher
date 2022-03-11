@@ -58,14 +58,7 @@ def Exam_Template():
 \\usepackage{physics}
 \\usepackage{multicol}
 
-\\oddsidemargin  -0.5in
-\\evensidemargin -0.5in
-\\textwidth      7.5in
-\\headheight     -0.7in
-\\topmargin      -0.5cm
-\\textheight=10.5in
-\\footskip 0 in
-\\parskip 0.10in
+\\geometry{top=0.7cm, bottom=0.7cm, left=1cm, right=1cm}
 
 \\begin{document}
 
@@ -126,7 +119,7 @@ def Genera_file_domande(filename='questionario.xlsx',folder='.'):
             name = os.path.join(folder,sheet+"-0")
             question = elems[0][0].strip()
             responses = [str(e[0]).strip() for e in elems[1:]]
-            responses = "\n.\n".join(responses)+'\n.'
+            responses = "\n.\n".join(responses)
             with open(name,'w') as file:
                 print(question+"\n.\n"+responses+"\n.\n",file=file)
         else:
