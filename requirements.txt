@@ -1,0 +1,6 @@
+# Mucher dependencies
+pandas>=1.3.0
+matplotlib>=3.4.0
+jinja2>=3.0.0
+PyYAML>=6.0
+openpyxl>=3.0.0
