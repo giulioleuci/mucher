@@ -39,8 +39,9 @@ Il modulo `ExamGenerator` gestisce l'intero processo di generazione:
 
 1. **Parsing domande da Excel**
    - Legge domande organizzate per categoria (ogni scheda Excel = una categoria)
-   - Supporta varianti multiple della stessa domanda
-   - Ogni domanda ha 4 opzioni di risposta (la prima è sempre quella corretta)
+   - Prima riga = intestazione, righe successive = varianti della domanda
+   - Supporta numero variabile di risposte per ogni domanda
+   - La prima risposta è sempre quella corretta
 
 2. **Conversione formato much**
    - Crea file di domande nel formato richiesto da much (testo + risposte separate da ".")
@@ -118,11 +119,11 @@ Seconda risposta
 .
 Terza risposta
 .
-Quarta risposta
+[altre risposte...]
 .
 ```
 
-Mucher converte automaticamente le righe Excel in questo formato.
+Mucher converte automaticamente ogni riga del file Excel (esclusa l'intestazione) in questo formato, supportando un numero variabile di risposte.
 
 ### 2. File description
 
@@ -232,29 +233,34 @@ optional arguments:
 ### File domande (questionario.xlsx)
 
 - **Una scheda per categoria**: Ogni scheda Excel rappresenta una categoria di domande
-- **Formato righe**: Blocchi di 5 righe per ogni domanda
-  - Riga 1: Testo della domanda
-  - Riga 2: Prima risposta (CORRETTA)
-  - Riga 3: Seconda risposta
-  - Riga 4: Terza risposta
-  - Riga 5: Quarta risposta
+- **Prima riga = intestazione**: Intestazione per leggibilità umana con le colonne:
+  - `Testo della domanda`
+  - `Risposta corretta`
+  - `Alternativa 1`, `Alternativa 2`, `Alternativa 3`, ...
+  - `Numero Colonne Alternative` (ultima colonna)
+- **Righe successive = varianti**: Ogni riga (dalla seconda in poi) rappresenta una variante della domanda
+- **Numero variabile di risposte**: Ogni domanda può avere un numero diverso di risposte, specificato nell'ultima colonna
 
-- **Varianti multiple**: Per creare varianti della stessa domanda, aggiungere blocchi di 5 righe consecutivi nella stessa scheda
+**Esempio scheda "Vettori":**
 
-**Esempio:**
-```
-Scheda "Fisica":
-Riga 1: Qual è la velocità della luce?
-Riga 2: 299792458 m/s
-Riga 3: 300000000 m/s
-Riga 4: 280000000 m/s
-Riga 5: 310000000 m/s
-Riga 6: Qual è la costante di Planck?
-Riga 7: 6.626×10^-34 J·s
-Riga 8: 6.626×10^-33 J·s
-Riga 9: 6.626×10^-35 J·s
-Riga 10: 6.626×10^-32 J·s
-```
+| Testo della domanda | Risposta corretta | Alternativa 1 | Alternativa 2 | Alternativa 3 | Numero Colonne Alternative |
+|---------------------|-------------------|---------------|---------------|---------------|----------------------------|
+| Quali sono le tre caratteristiche che definiscono un vettore? | Modulo, direzione e verso | Lunghezza, verso e unità di misura | Intensità, retta e punto | Valore, segno e unità di misura | 4 |
+| Un ente definito da modulo, direzione e verso è: | Un vettore | Uno scalare | Un numero puro | Una costante | 4 |
+| Per descrivere completamente un vettore nel piano occorrono: | Modulo, direzione e verso | Modulo, direzione e unità di misura | Intensità, retta e punto | Intensità, direzione e unità di misura | 4 |
+
+**Esempio con numero variabile di risposte:**
+
+| Testo della domanda | Risposta corretta | Alternativa 1 | Alternativa 2 | Alternativa 3 | Numero Colonne Alternative |
+|---------------------|-------------------|---------------|---------------|---------------|----------------------------|
+| La somma massima di due vettori si ha quando sono: | Paralleli e concordi | Perpendicolari | Opposti | Casuali | 4 |
+| La somma minima di due vettori si ha quando sono: | Paralleli e discordi | Paralleli e concordi | Perpendicolari | | 3 |
+| Se il modulo risultante è la somma dei moduli, l'angolo è: | $0^\circ$ | $180^\circ$ | $90^\circ$ | $45^\circ$ | 4 |
+
+**Note:**
+- La colonna `Numero Colonne Alternative` indica il numero totale di risposte (risposta corretta + alternative)
+- Se una domanda ha solo 3 risposte, lasciare vuote le colonne delle alternative non utilizzate e indicare `3` nell'ultima colonna
+- Le formule LaTeX (es. `$0^\circ$`) sono supportate nel testo delle domande e delle risposte
 
 ### File risposte studenti
 

@@ -45,9 +45,6 @@ DEFAULT_POINTS_CORRECT = 4
 DEFAULT_POINTS_MISSING = 1
 DEFAULT_POINTS_INCORRECT = 0
 
-QUESTIONS_PER_BLOCK = 5
-RESPONSES_PER_QUESTION = 4
-
 FIGURE_HEIGHT = 10
 FIGURE_WIDTH = 15
 BAR_WIDTH = 0.2
@@ -168,6 +165,7 @@ def get_latex_template() -> str:
 \usepackage{multicol}
 \usepackage{geometry}
 \usepackage{microtype}
+\usepackage{tikz}
 
 \geometry{top=0.7cm, bottom=0.7cm, left=1cm, right=1cm}
 
@@ -299,6 +297,13 @@ class ExamGenerator:
         """Parse questions from an Excel file and create question files.
 
         Each sheet in the Excel file represents a category of questions.
+        The first row is a header with columns:
+        - Testo della domanda
+        - Risposta corretta
+        - Alternativa 1, Alternativa 2, ...
+        - Numero Colonne Alternative
+
+        Each subsequent row is a question variant with variable number of responses.
         Questions are written to individual files for 'much' to process.
 
         Args:
@@ -320,30 +325,17 @@ class ExamGenerator:
             raise ValueError(f"Excel file has no sheets: {input_path}")
 
         for sheet in sheets:
-            elements = excel_file.parse(sheet, header=None).values
+            # Read with header=None to get raw data
+            df = excel_file.parse(sheet, header=None)
+            elements = df.values
 
-            if len(elements) == 0:
-                logger.warning(f"Sheet '{sheet}' is empty, skipping")
+            if len(elements) <= 1:
+                logger.warning(f"Sheet '{sheet}' has no question rows (only header or empty), skipping")
                 continue
 
-            if len(elements) == QUESTIONS_PER_BLOCK:
-                # Single question in sheet
-                self._write_question_file(folder, sheet, 0, elements, 0)
-            elif len(elements) % QUESTIONS_PER_BLOCK == 0:
-                # Multiple questions in sheet
-                num_questions = len(elements) // QUESTIONS_PER_BLOCK
-                for i in range(num_questions):
-                    start_idx = i * QUESTIONS_PER_BLOCK
-                    self._write_question_file(folder, sheet, i, elements, start_idx)
-            else:
-                logger.warning(
-                    f"Sheet '{sheet}' has {len(elements)} rows, expected multiple of "
-                    f"{QUESTIONS_PER_BLOCK}. Some questions may be skipped."
-                )
-                num_questions = len(elements) // QUESTIONS_PER_BLOCK
-                for i in range(num_questions):
-                    start_idx = i * QUESTIONS_PER_BLOCK
-                    self._write_question_file(folder, sheet, i, elements, start_idx)
+            # Skip header row (row 0), process each subsequent row as a question variant
+            for i, row in enumerate(elements[1:], start=0):
+                self._write_question_file(folder, sheet, i, row)
 
         logger.info(f"Parsed {len(sheets)} question categories")
         return sheets
@@ -353,46 +345,66 @@ class ExamGenerator:
         folder: Path,
         sheet: str,
         index: int,
-        elements: Any,
-        start_idx: int
+        row: Any
     ) -> None:
         """Write a single question to a file in 'much' format.
+
+        The row format is:
+        - Column 0: Question text
+        - Column 1: Correct answer
+        - Columns 2 to n-2: Alternative answers
+        - Column n-1: Number of total responses (Numero Colonne Alternative)
 
         Args:
             folder: Directory for the question file.
             sheet: Sheet name (used as category prefix).
-            index: Question index within the sheet.
-            elements: Array of question data from Excel.
-            start_idx: Starting index in elements array.
+            index: Question index within the sheet (0-based).
+            row: Row data containing question and responses.
         """
         filename = folder / f"{sheet}-{index}"
 
-        # Validate array bounds
-        if start_idx >= len(elements):
-            logger.warning(f"Invalid start index {start_idx} for sheet '{sheet}'")
+        # Validate row has minimum required columns
+        if len(row) < 3:
+            logger.warning(f"Row {index} in sheet '{sheet}' has too few columns, skipping")
             return
 
-        question_row = elements[start_idx]
-        if len(question_row) == 0 or pd.isna(question_row[0]):
-            logger.warning(f"Empty question in sheet '{sheet}' at index {index}")
+        # Get question text (column 0)
+        if pd.isna(row[0]):
+            logger.warning(f"Empty question in sheet '{sheet}' at row {index}")
             return
 
-        question = str(question_row[0]).strip()
+        question = str(row[0]).strip()
 
-        # Extract responses with bounds checking
+        # Get number of responses from last column
+        num_responses_col = row[-1]
+        if pd.isna(num_responses_col):
+            logger.warning(f"Missing 'Numero Colonne Alternative' in sheet '{sheet}' at row {index}")
+            return
+
+        try:
+            num_responses = int(num_responses_col)
+        except (ValueError, TypeError):
+            logger.warning(f"Invalid 'Numero Colonne Alternative' value '{num_responses_col}' in sheet '{sheet}' at row {index}")
+            return
+
+        # Extract responses (columns 1 to num_responses inclusive)
+        # Column 1 = correct answer, columns 2 to num_responses = alternatives
         responses = []
-        for i in range(1, RESPONSES_PER_QUESTION + 1):
-            resp_idx = start_idx + i
-            if resp_idx < len(elements) and len(elements[resp_idx]) > 0:
-                resp_value = elements[resp_idx][0]
+        for i in range(1, num_responses + 1):
+            if i < len(row) - 1:  # -1 because last column is num_responses
+                resp_value = row[i]
                 if not pd.isna(resp_value):
                     responses.append(str(resp_value).strip())
 
-        if len(responses) < RESPONSES_PER_QUESTION:
+        if len(responses) < num_responses:
             logger.warning(
-                f"Question in sheet '{sheet}' at index {index} has only "
-                f"{len(responses)} responses (expected {RESPONSES_PER_QUESTION})"
+                f"Question in sheet '{sheet}' at row {index} has only "
+                f"{len(responses)} responses (expected {num_responses})"
             )
+
+        if len(responses) == 0:
+            logger.warning(f"No responses found for question in sheet '{sheet}' at row {index}")
+            return
 
         content = question + "\n.\n" + "\n.\n".join(responses) + "\n.\n"
         filename.write_text(content, encoding='utf-8')
